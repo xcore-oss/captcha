@@ -23,9 +23,9 @@ import (
 	"path"
 	"strings"
 
-	"github.com/go-macaron/cache"
 	"github.com/unknwon/com"
-	"gopkg.in/macaron.v1"
+	"github.com/xcore-oss/cache"
+	"github.com/xcore-oss/macaron"
 )
 
 var (

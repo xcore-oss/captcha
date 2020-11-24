@@ -9,7 +9,7 @@ Middleware captcha provides captcha service for [Macaron](https://github.com/go-
 
 ### Installation
 
-	go get github.com/go-macaron/captcha
+	go get github.com/xcore-oss/captcha
 
 ## Getting Help
 

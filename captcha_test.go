@@ -19,9 +19,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/go-macaron/cache"
 	. "github.com/smartystreets/goconvey/convey"
-	"gopkg.in/macaron.v1"
+	"github.com/xcore-oss/cache"
+	"github.com/xcore-oss/macaron"
 )
 
 func Test_Captcha(t *testing.T) {
