@@ -204,7 +204,7 @@ func siphash(k0, k1, m uint64) uint64 {
 	return v0 ^ v1 ^ v2 ^ v3
 }
 
-// rekey sets a new PRNG key, which is read from crypto/rand.
+// rekey sets a new PRNG Key, which is read from crypto/rand.
 func (p *siprng) rekey() {
 	var k [16]byte
 	if _, err := io.ReadFull(rand.Reader, k[:]); err != nil {

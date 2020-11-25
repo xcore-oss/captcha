@@ -322,9 +322,9 @@ func NewImage(digits []byte, width, height int, colorPalette color.Palette) *Ima
 	return m
 }
 
-// encodedPNG encodes an image to PNG and returns
+// EncodedPNG encodes an image to PNG and returns
 // the result as a byte slice.
-func (m *Image) encodedPNG() []byte {
+func (m *Image) EncodedPNG() []byte {
 	var buf bytes.Buffer
 	if err := png.Encode(&buf, m.Paletted); err != nil {
 		panic(err.Error())
@@ -334,7 +334,7 @@ func (m *Image) encodedPNG() []byte {
 
 // WriteTo writes captcha image in PNG format into the given writer.
 func (m *Image) WriteTo(w io.Writer) (int64, error) {
-	n, err := w.Write(m.encodedPNG())
+	n, err := w.Write(m.EncodedPNG())
 	return int64(n), err
 }
 

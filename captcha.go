@@ -47,13 +47,13 @@ type Captcha struct {
 	ColorPalette     color.Palette
 }
 
-// generate key string
-func (c *Captcha) key(id string) string {
+// generate Key string
+func (c *Captcha) Key(id string) string {
 	return c.CachePrefix + id
 }
 
 // generate rand chars with default chars
-func (c *Captcha) genRandChars() string {
+func (c *Captcha) GenRandChars() string {
 	return string(com.RandomCreateBytes(c.ChallengeNums, defaultChars...))
 }
 
@@ -69,15 +69,10 @@ func (c *Captcha) CreateHTML() template.HTML {
 	</a>`, c.FieldIdName, value, c.SubURL, c.URLPrefix))
 }
 
-// DEPRECATED
-func (c *Captcha) CreateHtml() template.HTML {
-	return c.CreateHTML()
-}
-
 // create a new captcha id
 func (c *Captcha) CreateCaptcha() (string, error) {
 	id := string(com.RandomCreateBytes(15))
-	if err := c.store.Put(c.key(id), c.genRandChars(), c.Expiration); err != nil {
+	if err := c.store.Put(c.Key(id), c.GenRandChars(), c.Expiration); err != nil {
 		return "", err
 	}
 	return id, nil
@@ -97,7 +92,7 @@ func (c *Captcha) Verify(id string, challenge string) bool {
 
 	var chars string
 
-	key := c.key(id)
+	key := c.Key(id)
 
 	if v, ok := c.store.Get(key).(string); ok {
 		chars = v
@@ -140,14 +135,14 @@ type Options struct {
 	Height int
 	// Captcha expiration time in seconds. Default is 600.
 	Expiration int64
-	// Cache key prefix captcha characters. Default is "captcha_".
+	// Cache Key prefix captcha characters. Default is "captcha_".
 	CachePrefix string
 	// ColorPalette holds a collection of primary colors used for
 	// the captcha's text. If not defined, a random color will be generated.
 	ColorPalette color.Palette
 }
 
-func prepareOptions(options []Options) Options {
+func PrepareOptions(options []Options) Options {
 	var opt Options
 	if len(options) > 0 {
 		opt = options[0]
@@ -207,7 +202,7 @@ func NewCaptcha(opt Options) *Captcha {
 // This should be register after cache.Cacher.
 func Captchaer(options ...Options) macaron.Handler {
 	return func(ctx *macaron.Context, cache cache.Cache) {
-		cpt := NewCaptcha(prepareOptions(options))
+		cpt := NewCaptcha(PrepareOptions(options))
 		cpt.store = cache
 
 		if strings.HasPrefix(ctx.Req.URL.Path, cpt.URLPrefix) {
@@ -216,11 +211,11 @@ func Captchaer(options ...Options) macaron.Handler {
 			if i := strings.Index(id, "."); i > -1 {
 				id = id[:i]
 			}
-			key := cpt.key(id)
+			key := cpt.Key(id)
 
 			// Reload captcha.
 			if len(ctx.Query("reload")) > 0 {
-				chars = cpt.genRandChars()
+				chars = cpt.GenRandChars()
 				if err := cpt.store.Put(key, chars, cpt.Expiration); err != nil {
 					ctx.Status(500)
 					_, _ = ctx.Write([]byte("captcha reload error"))
